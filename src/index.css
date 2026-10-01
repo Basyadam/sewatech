@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@media print {
+  /* Hide all elements by default during print */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* Make printable document container visible and full page */
+  #printable-agreement-content,
+  #printable-agreement-content * {
+    visibility: visible !important;
+  }
+
+  #printable-agreement-content {
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 20px !important;
+    background: white !important;
+    color: black !important;
+    z-index: 999999 !important;
+    overflow: visible !important;
+  }
+
+  /* Prevent page breaks inside important sections */
+  table, tr, td, th {
+    page-break-inside: avoid !important;
+  }
+}
