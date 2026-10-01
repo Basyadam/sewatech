@@ -1,6 +1,6 @@
 export function toNumber(value, fallback = 0) {
-  const numericValue = Number(value ?? fallback);
-  return Number.isFinite(numericValue) ? numericValue : fallback;
+  const result = Number(value ?? fallback);
+  return Number.isFinite(result) ? result : fallback;
 }
 
 export function formatCurrency(value, options = {}) {
@@ -28,29 +28,7 @@ export function formatCurrency(value, options = {}) {
   return formatted.replace(/IDR|Rp/gi, symbol).replace(/\s+/g, ' ').trim();
 }
 
-export function formatCurrencyShort(value, options = {}) {
-  const { locale = 'id-ID', currency = 'IDR' } = options;
-  const numericValue = toNumber(value, 0);
-
-  if (!Number.isFinite(numericValue)) return 'Rp 0';
-
-  const compact = new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency,
-    notation: 'compact',
-    maximumFractionDigits: 1
-  }).format(numericValue);
-
-  return compact.replace(/IDR/gi, 'Rp').replace(/\s+/g, ' ').trim();
-}
-
-export function formatDate(value, options = {}) {
-  const {
-    locale = 'id-ID',
-    dateStyle = 'medium',
-    fallback = '-'
-  } = options;
-
+export function formatDate(value, locale = 'id-ID', fallback = '-') {
   if (!value) return fallback;
 
   const date = new Date(value);
@@ -60,18 +38,11 @@ export function formatDate(value, options = {}) {
   }
 
   return new Intl.DateTimeFormat(locale, {
-    dateStyle
+    dateStyle: 'medium'
   }).format(date);
 }
 
-export function formatDateTime(value, options = {}) {
-  const {
-    locale = 'id-ID',
-    dateStyle = 'medium',
-    timeStyle = 'short',
-    fallback = '-'
-  } = options;
-
+export function formatDateTime(value, locale = 'id-ID', fallback = '-') {
   if (!value) return fallback;
 
   const date = new Date(value);
@@ -81,9 +52,19 @@ export function formatDateTime(value, options = {}) {
   }
 
   return new Intl.DateTimeFormat(locale, {
-    dateStyle,
-    timeStyle
+    dateStyle: 'medium',
+    timeStyle: 'short'
   }).format(date);
+}
+
+export function slugify(text = '') {
+  return String(text)
+    .toLowerCase()
+    .trim()
+    .replace(/[\s_]+/g, '-')
+    .replace(/[^a-z0-9\-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
 }
 
 export function formatPhoneNumber(phone, fallback = '-') {
@@ -161,14 +142,16 @@ export function createReceiptText(receipt) {
     .join('\n');
 }
 
-export default {
+const helpers = {
   toNumber,
   formatCurrency,
-  formatCurrencyShort,
   formatDate,
   formatDateTime,
+  slugify,
   formatPhoneNumber,
   generateReceiptNumber,
   buildReceiptPayload,
   createReceiptText
 };
+
+export default helpers;
